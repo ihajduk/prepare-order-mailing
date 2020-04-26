@@ -1,0 +1,2 @@
+rootProject.name='PrepareOrderMailing'
+include ':app'
