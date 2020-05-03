@@ -11,9 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Http"></activity>
-        <activity android:name=".EnterCode" />
-        <activity android:name=".Index">
+        <activity android:name=".view.Http"></activity>
+        <activity android:name=".view.EnterCode" />
+        <activity android:name=".view.Index">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
