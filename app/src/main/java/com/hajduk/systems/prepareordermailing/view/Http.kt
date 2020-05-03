@@ -1,10 +1,12 @@
-package com.hajduk.systems.prepareordermailing
+package com.hajduk.systems.prepareordermailing.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.Gson
+import com.hajduk.systems.prepareordermailing.ORDER_ID
+import com.hajduk.systems.prepareordermailing.R
 import kotlinx.android.synthetic.main.activity_http.*
 
 class Http : AppCompatActivity() {

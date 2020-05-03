@@ -1,8 +1,10 @@
-package com.hajduk.systems.prepareordermailing
+package com.hajduk.systems.prepareordermailing.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.hajduk.systems.prepareordermailing.ORDER_ID
+import com.hajduk.systems.prepareordermailing.R
 import kotlinx.android.synthetic.main.activity_enter_code.*
 
 class EnterCode : AppCompatActivity() {
