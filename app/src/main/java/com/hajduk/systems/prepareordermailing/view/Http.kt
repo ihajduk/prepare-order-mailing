@@ -1,7 +1,7 @@
 package com.hajduk.systems.prepareordermailing.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.Gson
@@ -20,10 +20,10 @@ class Http : AppCompatActivity() {
         val httpAsync = "http://10.0.2.2:8080/data/order/$orderId"
             .httpGet()
             .responseObject(Order.Deserializer()) { request, response, result ->
-                val (order, err) = result
-
+                val (_, _) = result
                 val data = result.get()
-                httpTextView.setText("Witaj ${data.name}, przesyłka z: ${data.offer} oczekuje na wysyłkę")
+
+                httpTextView.text = "Witaj ${data.name}, przesyłka z: ${data.offer} oczekuje na wysyłkę"
             }
 
         httpAsync.join()
@@ -31,8 +31,7 @@ class Http : AppCompatActivity() {
 
     data class Order(val name: String, val offer: String) {
         class Deserializer : ResponseDeserializable<Order> {
-            override fun deserialize(content: String): Order
-                    = Gson().fromJson(content, Order::class.java)
+            override fun deserialize(content: String): Order = Gson().fromJson(content, Order::class.java)
         }
     }
 
