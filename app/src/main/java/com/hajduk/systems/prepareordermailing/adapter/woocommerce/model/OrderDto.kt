@@ -9,8 +9,8 @@ data class OrderDto(
     val orderKey: String,
     val createdVia: String,
     val version: String,
-    val status: String, //enum
-    val currency: String, //enum
+    val status: OrderStatus,
+    val currency: Currency,
     val dateCreated: LocalDateTime,
     val dateCreatedGmt: LocalDateTime,
     val dateModified: LocalDateTime,
@@ -29,7 +29,7 @@ data class OrderDto(
     val customerNote: String,
     val billing: BillingDto,
     val shipping: ShippingDto,
-    val paymentMethod: String, //enum
+    val paymentMethod: String,
     val paymentMethodTitle: String,
     val transactionId: String,
     val datePaid: LocalDateTime,
