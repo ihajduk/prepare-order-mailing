@@ -1,5 +1,12 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.ResponseDeserializable
@@ -52,12 +59,17 @@ class WooCommerceClient(
     class GsonDeserializer<T : Any>(private val clazz: Class<T>) : ResponseDeserializable<T> {
 
         private companion object {
-            private val gson = GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create()
+            private val objectMapper = ObjectMapper().apply {
+                propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
+                setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                registerModule(JavaTimeModule())
+                registerModule(Jdk8Module())
+            }
         }
 
-        override fun deserialize(content: String): T = gson.fromJson(content, clazz)
+        override fun deserialize(content: String): T = objectMapper.readValue(content, clazz)
     }
 }
 

@@ -1,5 +1,6 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce.model
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -8,9 +9,13 @@ data class ProductDto(
     val name: String,
     val slug: String,
     val permalink: String,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val dateCreated: LocalDateTime,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val dateCreatedGmt: LocalDateTime,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val dateModified: LocalDateTime,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val dateModifiedGmt: LocalDateTime,
     val type: ProductType,
     val status: ProductStatus,
@@ -22,9 +27,13 @@ data class ProductDto(
     val price: BigDecimal,
     val regularPrice: String,
     val salePrice: BigDecimal,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val dateOnSaleFrom: LocalDateTime,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val dateOnSaleFromGmt: LocalDateTime,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val dateOnSaleTo: LocalDateTime,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val dateOnSaleToGmt: LocalDateTime,
     val priceHtml: String,
     val onSale: Boolean,

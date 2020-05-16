@@ -1,18 +1,18 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class CatalogVisibility {
 
-    @SerializedName("visible")
+    @JsonProperty("visible")
     VISIBLE,
 
-    @SerializedName("catalog")
+    @JsonProperty("catalog")
     CATALOG,
 
-    @SerializedName("search")
+    @JsonProperty("search")
     SEARCH,
 
-    @SerializedName("hidden")
+    @JsonProperty("hidden")
     HIDDEN
 }

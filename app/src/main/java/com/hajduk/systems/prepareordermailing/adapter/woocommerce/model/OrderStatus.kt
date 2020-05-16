@@ -1,30 +1,30 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class OrderStatus {
 
-    @SerializedName("pending")
+    @JsonProperty("pending")
     PENDING,
 
-    @SerializedName("processing")
+    @JsonProperty("processing")
     PROCESSING,
 
-    @SerializedName("on-hold")
+    @JsonProperty("on-hold")
     ON_HOLD,
 
-    @SerializedName("completed")
+    @JsonProperty("completed")
     COMPLETED,
 
-    @SerializedName("cancelled")
+    @JsonProperty("cancelled")
     CANCELLED,
 
-    @SerializedName("refunded")
+    @JsonProperty("refunded")
     REFUNDED,
 
-    @SerializedName("failed")
+    @JsonProperty("failed")
     FAILED,
 
-    @SerializedName("trash")
+    @JsonProperty("trash")
     TRASH
 }

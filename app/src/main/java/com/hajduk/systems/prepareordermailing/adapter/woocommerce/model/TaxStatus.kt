@@ -1,15 +1,15 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class TaxStatus {
 
-    @SerializedName("taxable")
+    @JsonProperty("taxable")
     TAXABLE,
 
-    @SerializedName("shipping")
+    @JsonProperty("shipping")
     SHIPPING,
 
-    @SerializedName("none")
+    @JsonProperty("none")
     NONE
 }
