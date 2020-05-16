@@ -11,7 +11,6 @@ import com.google.gson.GsonBuilder
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
 import com.hajduk.systems.prepareordermailing.domain.Order
 import org.apache.commons.codec.binary.Hex
-import org.scribe.builder.ServiceBuilder
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -73,7 +72,7 @@ class WooCommerceClient(
 
         val encode = encode("abcd&1234", base)
 
-
+        return base+encode
     }
 
     class GsonDeserializer<T : Any>(private val clazz: Class<T>) : ResponseDeserializable<T> {
