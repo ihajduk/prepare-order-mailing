@@ -1,18 +1,18 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class ProductStatus {
 
-    @SerializedName("draft")
+    @JsonProperty("draft")
     DRAFT,
 
-    @SerializedName("pending")
+    @JsonProperty("pending")
     PENDING,
 
-    @SerializedName("private")
+    @JsonProperty("private")
     PRIVATE,
 
-    @SerializedName("publish")
+    @JsonProperty("publish")
     PUBLISH
 }

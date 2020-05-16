@@ -1,18 +1,18 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce.model
 
-import com.google.gson.annotations.SerializedName
+import com.fasterxml.jackson.annotation.JsonProperty
 
 enum class ProductType {
 
-    @SerializedName("simple")
+    @JsonProperty("simple")
     SIMPLE,
 
-    @SerializedName("grouped")
+    @JsonProperty("grouped")
     GROUPED,
 
-    @SerializedName("external")
+    @JsonProperty("external")
     EXTERNAL,
 
-    @SerializedName("variable")
+    @JsonProperty("variable")
     VARIABLE
 }
