@@ -35,7 +35,7 @@ class TakePhoto : AppCompatActivity() {
         val photoFile = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), photoFileName)
         if (PHOTO_CAPTURE_REQUEST_CODE == requestCode && Activity.RESULT_OK == resultCode) {
             takePhotoTextView.text = ""
-            startActivity(Intent(this, Http::class.java).apply {
+            startActivity(Intent(this, SendEmail::class.java).apply {
                 putExtra(ORDER_ID, getOrderId())
                 putExtra(PHOTO_ABSOLUTE_PATH, photoFile.absolutePath)
             })
