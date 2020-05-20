@@ -12,10 +12,11 @@ import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.core.isSuccessful
 import com.github.kittinunf.fuel.httpGet
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.ClientResultStatus.*
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
+import com.icoderman.woocommerce.HttpMethod
+import com.icoderman.woocommerce.oauth.OAuthConfig
+import com.icoderman.woocommerce.oauth.OAuthSignature
 
 class WooCommerceClient(
     private val serverUrl: String,
@@ -23,13 +24,6 @@ class WooCommerceClient(
     private val clientSecret: String
 ) {
     companion object {
-        private const val O_AUTH_CONSUMER_KEY_PARAM_NAME = "oauth_consumer_key"
-        private const val O_AUTH_CONSUMER_TOKEN_PARAM_NAME = "oauth_consumer_token"
-        private const val O_AUTH_SIGNATURE_METHOD_PARAM_NAME = "oauth_signature_method"
-        private const val O_AUTH_SIGNATURE_METHOD = "HMAC-SHA1"
-        private const val O_AUTH_VERSION_PARAM_NAME = "oauth_version"
-        private const val O_AUTH_VERSION = "1.0"
-
         private const val BASE_URL = "/wp-json/wc/v3"
         private const val ORDERS_RESOURCE = "/orders"
     }
@@ -39,11 +33,8 @@ class WooCommerceClient(
     }
 
     private fun buildUrl(resource: String): String {
-        return "$serverUrl$BASE_URL$resource" +
-                "?$O_AUTH_CONSUMER_KEY_PARAM_NAME=$clientKey" +
-                "&$O_AUTH_CONSUMER_TOKEN_PARAM_NAME=$clientSecret" +
-                "&$O_AUTH_SIGNATURE_METHOD_PARAM_NAME=$O_AUTH_SIGNATURE_METHOD" +
-                "&$O_AUTH_VERSION_PARAM_NAME=$O_AUTH_VERSION"
+        val url = "$serverUrl$BASE_URL$resource"
+        return "$url?${OAuthSignature.getAsQueryString(OAuthConfig(serverUrl, clientKey, clientSecret), url, HttpMethod.GET)}"
     }
 
     private fun executeCall(callRequest: Request): ClientResult {

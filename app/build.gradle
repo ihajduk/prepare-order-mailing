@@ -45,4 +45,5 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.0'
+    implementation 'com.icoderman:wc-api-java:1.4'
 }
