@@ -12,7 +12,7 @@ class Index : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_index)
         scanButton.setOnClickListener { _ ->
-            startActivity(Intent(this, ZxingScanBarCode::class.java))
+            startActivity(Intent(this, KScanBarCode::class.java))
         }
     }
 }
