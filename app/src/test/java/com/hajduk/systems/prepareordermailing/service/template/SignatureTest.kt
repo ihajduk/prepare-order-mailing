@@ -44,22 +44,20 @@ class SignatureTest {
         println("$urlBase?${params.entries.joinToString("&") { e -> "${e.key}=${e.value}" }}&oauth_signature=$signature")
     }
 
-    @Ignore
     @Test
     fun java_client_test() {
-        val config = OAuthConfig("http://localhost:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
-        val url = "${config.url}/wp-json/wc/v3/orders/12"
-        println("$url?${OAuthSignature.getAsQueryString(config, url, HttpMethod.GET)}")
+        val config = OAuthConfig("http://localhost", "ck_132211fbf3952da2e259ac134d456f59c15ae8d3", "cs_b850bfa01ca6eef3c4ae1fb73b9d781524651cc4")
+        val url = "${config.url}/wp-json/wc/v3/orders"
+        println("http://127.0.0.1/wp-json/wc/v3/orders?${OAuthSignature.getAsQueryString(config, url, HttpMethod.GET)}")
     }
 
     @Test
     fun wooCommerceClient_test() {
-        WooCommerceClient("http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
-            .getOrderFuel("12",
+        WooCommerceClient("http://localhost", "http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
+            .getOrder("12",
                 { println("success $it") },
+                { println("not found") },
                 { println("failure $it") }
-        )
+            )
     }
 }
-
-//WooCommerceClient("http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")

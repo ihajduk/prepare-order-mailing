@@ -1,4 +1,4 @@
-package com.hajduk.systems.prepareordermailing.adapter.woocommerce.signer
+package com.hajduk.systems.prepareordermailing.adapter.woocommerce.oauth
 
 import android.util.Base64
 import com.icoderman.woocommerce.HttpMethod
@@ -8,6 +8,7 @@ import com.icoderman.woocommerce.oauth.SpecialSymbol
 import java.io.UnsupportedEncodingException
 import java.lang.Boolean
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.util.*
@@ -15,7 +16,8 @@ import java.util.stream.Collectors
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-class OAuthSig {
+class OAuthSignatureGenerator {
+
     companion object {
         private const val UTF_8 = "UTF-8";
         private const val HMAC_SHA256 = "HmacSHA256";
@@ -23,9 +25,6 @@ class OAuthSig {
         private const val BASE_SIGNATURE_FORMAT = "%s&%s&%s";
         private const val DELETE_PARAM_FORCE = "force";
     }
-
-
-    private fun OAuthSignature() {}
 
     fun getAsMap(
         config: OAuthConfig?,
@@ -50,10 +49,6 @@ class OAuthSig {
         val oAuthSignature = generateOAuthSignature(config.consumerSecret, endpoint, httpMethod, authParams)
         authParams[OAuthHeader.OAUTH_SIGNATURE.value] = oAuthSignature
         return authParams
-    }
-
-    fun getAsMap(config: OAuthConfig?, endpoint: String?, httpMethod: HttpMethod?): Map<String, String>? {
-        return getAsMap(config, endpoint, httpMethod, emptyMap())
     }
 
     fun getAsQueryString(
@@ -92,12 +87,12 @@ class OAuthSig {
         val macInstance: Mac
         return try {
             macInstance = Mac.getInstance(HMAC_SHA256)
-            val secretKey = SecretKeySpec(
-                secret.toByteArray(charset(UTF_8)),
+            val secretKey = SecretKeySpec(secret.toByteArray(charset(UTF_8)),
                 HMAC_SHA256
             )
             macInstance.init(secretKey)
-            Base64.encode(macInstance.doFinal(signatureBaseString.toByteArray(charset(UTF_8))), 0).toString() //todo: here
+            String(Base64.encode(macInstance.doFinal(signatureBaseString.toByteArray(charset(UTF_8))), 0), StandardCharsets.UTF_8)
+                .replace("\n", "")//todo: here
         } catch (e: NoSuchAlgorithmException) {
             throw RuntimeException(e)
         } catch (e: InvalidKeyException) {

@@ -18,18 +18,18 @@ class Http : AppCompatActivity() {
 
         val orderId = intent.getStringExtra(ORDER_ID) ?: ""
 
-        val wooCommerceClient = WooCommerceClient("http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
+        val wooCommerceClient =
+            WooCommerceClient("http://localhost", "http://10.0.2.2", "ck_132211fbf3952da2e259ac134d456f59c15ae8d3", "cs_b850bfa01ca6eef3c4ae1fb73b9d781524651cc4")
 
-        Log.d("order", "calling api from http")
-
-        wooCommerceClient.getOrderFuel(
+        wooCommerceClient.getOrder(
             orderId = orderId,
-            onFailure = { message ->
-                Toast.makeText(this, message, LENGTH_LONG).show()
-            },
             onSuccess = { order ->
                 Log.d("order", "order = $order")
-                httpTextView.setText("Witaj ${order.customerId}, twoje rzeczy: ${order.items} za ${order.total} zara do ciebie lecą byczku") //todo: wrzucanie do maila
+                httpTextView.setText("Witaj ${order.customerId}, twoje rzeczy: ${order.lineItems} za ${order.total} zara do ciebie lecą byczku")
+            },
+            onNotFound = { Toast.makeText(this, "Nie znaleziono zamówienia: $orderId", LENGTH_LONG).show() },
+            onFailure = { message ->
+                Toast.makeText(this, message, LENGTH_LONG).show()
             }
         )
     }

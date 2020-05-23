@@ -15,9 +15,10 @@ class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
         // Context of the app under test.
-        WooCommerceClient("http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
-            .getOrderFuel("12",
+        WooCommerceClient("http://localhost", "http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
+            .getOrder("12",
                 { println("success $it") },
+                { println("not found") },
                 { println("failure $it") }
             )
     }
