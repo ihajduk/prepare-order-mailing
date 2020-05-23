@@ -9,10 +9,10 @@ import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.result.Result
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
-import com.hajduk.systems.prepareordermailing.adapter.woocommerce.signer.OAuthSig
 import com.hajduk.systems.prepareordermailing.domain.Order
 import com.icoderman.woocommerce.HttpMethod
 import com.icoderman.woocommerce.oauth.OAuthConfig
+import com.icoderman.woocommerce.oauth.OAuthSignature
 
 class WooCommerceClient(
     private val serverUrl: String,
@@ -29,7 +29,7 @@ class WooCommerceClient(
         Log.d(LOGGING_TAG, "attempting to contact woocommerce api...")
         val config = OAuthConfig(serverUrl, clientKey, clientSecret)
         val url = "${config.url}$BASE_URL$ORDERS_RESOURCE/$orderId"
-        val finalUrl = "$url?${OAuthSig().getAsQueryString(config, url, HttpMethod.GET)}" //todo: zajebalem source code do miejscowej klasy OAuthSig
+        val finalUrl = "$url?${OAuthSignature.getAsQueryString(config, url, HttpMethod.GET)}" //todo: zajebalem source code do miejscowej klasy OAuthSig
         Log.d(LOGGING_TAG, finalUrl)
         Fuel.get(finalUrl)
             .responseObject(GsonDeserializer(OrderDto::class.java)) { request, response, result ->
