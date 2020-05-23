@@ -1,6 +1,7 @@
 package com.hajduk.systems.prepareordermailing.view
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
@@ -19,12 +20,15 @@ class Http : AppCompatActivity() {
 
         val wooCommerceClient = WooCommerceClient("http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
 
+        Log.d("order", "calling api from http")
+
         wooCommerceClient.getOrderFuel(
             orderId = orderId,
             onFailure = { message ->
                 Toast.makeText(this, message, LENGTH_LONG).show()
             },
             onSuccess = { order ->
+                Log.d("order", "order = $order")
                 httpTextView.setText("Witaj ${order.customerId}, twoje rzeczy: ${order.items} za ${order.total} zara do ciebie lecą byczku") //todo: wrzucanie do maila
             }
         )
