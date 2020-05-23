@@ -1,5 +1,6 @@
 package com.hajduk.systems.prepareordermailing.service.template
 
+import com.hajduk.systems.prepareordermailing.adapter.woocommerce.WooCommerceClient
 import com.icoderman.woocommerce.HttpMethod
 import com.icoderman.woocommerce.oauth.OAuthConfig
 import com.icoderman.woocommerce.oauth.OAuthSignature
@@ -43,10 +44,22 @@ class SignatureTest {
         println("$urlBase?${params.entries.joinToString("&") { e -> "${e.key}=${e.value}" }}&oauth_signature=$signature")
     }
 
+    @Ignore
     @Test
     fun java_client_test() {
-        val config = OAuthConfig("http://localhost", "ck_5f6bc9a58f5f965a99ebac293442c4810051a174", "cs_4794c99927d3b3d5de06981336ce5e199b244e93")
-        val url = "${config.url}/wp-json/wc/v3/orders"
+        val config = OAuthConfig("http://localhost:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
+        val url = "${config.url}/wp-json/wc/v3/orders/12"
         println("$url?${OAuthSignature.getAsQueryString(config, url, HttpMethod.GET)}")
     }
+
+    @Test
+    fun wooCommerceClient_test() {
+        WooCommerceClient("http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
+            .getOrderFuel("12",
+                { println("success $it") },
+                { println("failure $it") }
+        )
+    }
 }
+
+//WooCommerceClient("http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")

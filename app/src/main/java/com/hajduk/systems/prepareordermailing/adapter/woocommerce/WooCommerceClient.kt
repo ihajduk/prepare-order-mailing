@@ -1,5 +1,6 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce
 
+import android.util.Log
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -7,13 +8,15 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.core.isSuccessful
-import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.result.Result
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.ClientResultStatus.*
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
+import com.hajduk.systems.prepareordermailing.domain.Order
 import com.icoderman.woocommerce.HttpMethod
 import com.icoderman.woocommerce.oauth.OAuthConfig
 import com.icoderman.woocommerce.oauth.OAuthSignature
@@ -26,10 +29,30 @@ class WooCommerceClient(
     companion object {
         private const val BASE_URL = "/wp-json/wc/v3"
         private const val ORDERS_RESOURCE = "/orders"
+        private const val LOGGING_TAG = "woocommerce"
     }
 
-    fun getOrder(orderId: String): ClientResult {
-        return executeCall(buildUrl("$ORDERS_RESOURCE/$orderId").httpGet())
+    fun getOrderFuel(orderId: String, onFailure: (message: String) -> Unit, onSuccess: (order: Order) -> Unit) {
+        val config = OAuthConfig(serverUrl, clientKey, clientSecret)
+        val url = "${config.url}$BASE_URL$ORDERS_RESOURCE/$orderId"
+        val finalUrl = "$url?${OAuthSignature.getAsQueryString(config, url, HttpMethod.GET)}"
+        Log.d(LOGGING_TAG, finalUrl)
+        Fuel.get(finalUrl)
+            .responseObject(GsonDeserializer(OrderDto::class.java)) { request, response, result ->
+                when (result) {
+                    is Result.Failure -> {
+                        Log.e(LOGGING_TAG, "Exception calling woocommerce: ", result.error)
+                        when {
+                            response.isNotFound -> onFailure.invoke("Nie znaleziono zamówienia o id $orderId")
+                            response.isUnauthorized -> onFailure.invoke("Kod uwierzytalniajacy clientKey: $clientKey jest nieprawidłowy")
+                            else -> onFailure.invoke("Wystąpił nieznany błąd. Skontaktuj się z administratorem: hajduk.nieruchomosci@gmail.com")
+                        }
+                    }
+                    is Result.Success -> {
+                        onSuccess.invoke(result.get().toDomain())
+                    }
+                }
+            }.join()
     }
 
     private fun buildUrl(resource: String): String {
@@ -63,6 +86,8 @@ class WooCommerceClient(
         override fun deserialize(content: String): T = objectMapper.readValue(content, clazz)
     }
 }
+
+private fun OrderDto.toDomain(): Order = Order(this.id, this.total, this.customerId, this.lineItems.map { it.name })
 
 val Response.isNotFound
     get() = statusCode == 404

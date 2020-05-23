@@ -1,12 +1,12 @@
 package com.hajduk.systems.prepareordermailing.view
 
 import android.os.Bundle
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
-import com.github.kittinunf.fuel.core.ResponseDeserializable
-import com.github.kittinunf.fuel.httpGet
-import com.google.gson.Gson
 import com.hajduk.systems.prepareordermailing.ORDER_ID
 import com.hajduk.systems.prepareordermailing.R
+import com.hajduk.systems.prepareordermailing.adapter.woocommerce.WooCommerceClient
 import kotlinx.android.synthetic.main.activity_http.*
 
 class Http : AppCompatActivity() {
@@ -17,22 +17,16 @@ class Http : AppCompatActivity() {
 
         val orderId = intent.getStringExtra(ORDER_ID) ?: ""
 
-        val httpAsync = "http://10.0.2.2:8080/data/order/$orderId"
-            .httpGet()
-            .responseObject(Order.Deserializer()) { request, response, result ->
-                val (_, _) = result
-                val data = result.get()
+        val wooCommerceClient = WooCommerceClient("http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
 
-                httpTextView.text = "Witaj ${data.name}, przesyłka z: ${data.offer} oczekuje na wysyłkę"
+        wooCommerceClient.getOrderFuel(
+            orderId = orderId,
+            onFailure = { message ->
+                Toast.makeText(this, message, LENGTH_LONG).show()
+            },
+            onSuccess = { order ->
+                httpTextView.setText("Witaj ${order.customerId}, twoje rzeczy: ${order.items} za ${order.total} zara do ciebie lecą byczku") //todo: wrzucanie do maila
             }
-
-        httpAsync.join()
+        )
     }
-
-    data class Order(val name: String, val offer: String) {
-        class Deserializer : ResponseDeserializable<Order> {
-            override fun deserialize(content: String): Order = Gson().fromJson(content, Order::class.java)
-        }
-    }
-
 }
