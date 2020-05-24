@@ -20,12 +20,11 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".view.SetAuthorization"></activity>
-        <activity android:name=".view.ScanBarCode" />
+        <activity android:name=".view.SetAuthorization"/>
         <activity android:name=".view.ConfirmData" />
         <activity android:name=".view.TakePhoto" />
         <activity android:name=".view.SendEmail" />
-        <activity android:name=".view.Index">
+        <activity android:name=".view.ScanBarCode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -21,13 +21,13 @@ class SendEmail : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_email)
-        findViewById<Button>(R.id.restartFlowButton).setOnClickListener { startActivity(Intent(this, Index::class.java)) }
+        findViewById<Button>(R.id.restartFlowButton).setOnClickListener { startActivity(Intent(this, ScanBarCode::class.java)) }
         sendEmail()
     }
 
     private fun sendEmail() {
         val emailData = resolveEmailData()
-        sendEmailTextView.text = "Wysyłam email do: ${emailData.receiver}"
+        sendEmailTextView.text = "Wysyłam email do:\n${emailData.receiver}"
         emailSender.sentEmail(emailData, this)
     }
 
