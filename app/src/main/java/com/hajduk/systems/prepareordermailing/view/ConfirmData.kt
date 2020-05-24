@@ -55,7 +55,8 @@ class ConfirmData : AppCompatActivity() {
 
         confirmDataTextView.text = """Zamówienie: ${order.id}
 Klient: ${customer.firstName} ${customer.lastName}
-Pozycje ${order.lineItems.map { lineItem -> "- \"${lineItem.name}\" - ${lineItem.quantity} szt." }.joinToString("\n")}"""
+Pozycje: 
+${order.lineItems.map { lineItem -> " - \"${lineItem.name}\" - ${lineItem.quantity} szt." }.joinToString("\n")}"""
     }
 
     private fun redirectBackToScanBarCode(toastMessage: String) {

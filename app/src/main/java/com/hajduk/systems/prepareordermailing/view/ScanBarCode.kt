@@ -21,6 +21,7 @@ class ScanBarCode : AppCompatActivity() {
         scanBarCodeButton.setOnClickListener { _ ->
             initializeBarCodeScanning()
         }
+        ApplicationDataHolder.instance.clearData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

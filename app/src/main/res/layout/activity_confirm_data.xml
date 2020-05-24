@@ -10,7 +10,10 @@
             android:id="@+id/confirmDataTextView"
             android:layout_width="0dp"
             android:layout_height="400dp"
+            android:fontFamily="sans-serif-light"
             android:textAlignment="viewStart"
+            android:textColor="#000000"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -18,16 +21,18 @@
     <Button
             android:id="@+id/dataConfirmButton"
             android:layout_width="150dp"
-            android:layout_height="100dp"
-            android:text="Akceptuj"
+            android:layout_height="75dp"
+            android:background="@drawable/green_gradient"
+            android:text="OK"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
             android:id="@+id/dataRejectButton"
             android:layout_width="150dp"
-            android:layout_height="100dp"
-            android:text="Popraw"
+            android:layout_height="75dp"
+            android:background="@drawable/red_gradient"
+            android:text="Jeszcze raz"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
