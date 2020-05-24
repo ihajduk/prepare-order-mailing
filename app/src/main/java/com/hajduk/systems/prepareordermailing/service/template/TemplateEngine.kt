@@ -13,9 +13,8 @@ class TemplateEngine {
     fun renderPrepareOrderEmail(templateData: PrepareOrderEmailRenderData): String {
         val lineItems = templateData.order.lineItems.map { lineItem -> "  - \"${lineItem.name}\" - ${lineItem.quantity} szt." }.joinToString("\n")
         return """Witaj ${templateData.customer.firstName}!
-Twoje zamówienie nr. ${templateData.order.id} 
-złożone: ${formatDate(templateData.order.dateCreated)} 
-o wartości ${formatCurrency(templateData.order.total)} 
+Twoje zamówienie nr. ${templateData.order.id}
+o wartości ${formatCurrency(templateData.order.total)}
 jest właśnie pakowane i już za chwilę zostanie przekazane kurierowi.
 Pozycje zamówienia: 
 $lineItems

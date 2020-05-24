@@ -5,8 +5,6 @@ import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.LineItem
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
 import org.junit.Assert
 import org.junit.Test
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 class TemplateEngineTest {
 
@@ -24,7 +22,6 @@ class TemplateEngineTest {
         )
         val order = OrderDto(
             11,
-            LocalDate.parse("2020-05-20").atStartOfDay(),
             1,
             10.11.toBigDecimal(),
             listOf(LineItemDto(111, "Product 1", 1), LineItemDto(222, "Product 2", 2))
@@ -33,9 +30,8 @@ class TemplateEngineTest {
 
         //and
         val expectedText = """Witaj Patryk!
-Twoje zamówienie nr. 11 
-złożone: 2020-05-20 
-o wartości 10,11 zł 
+Twoje zamówienie nr. 11
+o wartości 10,11 zł
 jest właśnie pakowane i już za chwilę zostanie przekazane kurierowi.
 Pozycje zamówienia: 
   - "Product 1" - 1 szt.

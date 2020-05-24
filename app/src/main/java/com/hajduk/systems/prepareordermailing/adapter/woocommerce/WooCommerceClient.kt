@@ -1,5 +1,6 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce
 
+import android.util.Log
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -7,56 +8,66 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.github.kittinunf.fuel.core.Request
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.ResponseDeserializable
-import com.github.kittinunf.fuel.core.isSuccessful
-import com.github.kittinunf.fuel.httpGet
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
-import com.hajduk.systems.prepareordermailing.adapter.woocommerce.ClientResultStatus.*
+import com.github.kittinunf.result.Result
+import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.CustomerDto
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
+import com.hajduk.systems.prepareordermailing.adapter.woocommerce.oauth.OAuthSignatureGenerator
+import com.icoderman.woocommerce.HttpMethod
+import com.icoderman.woocommerce.oauth.OAuthConfig
 
 class WooCommerceClient(
     private val serverUrl: String,
+    private val proxyUrl: String,
     private val clientKey: String,
     private val clientSecret: String
 ) {
     companion object {
-        private const val O_AUTH_CONSUMER_KEY_PARAM_NAME = "oauth_consumer_key"
-        private const val O_AUTH_CONSUMER_TOKEN_PARAM_NAME = "oauth_consumer_token"
-        private const val O_AUTH_SIGNATURE_METHOD_PARAM_NAME = "oauth_signature_method"
-        private const val O_AUTH_SIGNATURE_METHOD = "HMAC-SHA1"
-        private const val O_AUTH_VERSION_PARAM_NAME = "oauth_version"
-        private const val O_AUTH_VERSION = "1.0"
-
         private const val BASE_URL = "/wp-json/wc/v3"
         private const val ORDERS_RESOURCE = "/orders"
+        private const val CUSTOMERS_RESOURCE = "/customers"
+        private const val LOGGING_TAG = "woocommerce"
+
+        private val oAuthSignatureGenerator = OAuthSignatureGenerator()
     }
 
-    fun getOrder(orderId: String): ClientResult {
-        return executeCall(buildUrl("$ORDERS_RESOURCE/$orderId").httpGet())
+    fun getCustomer(customerId: Int, onSuccess: (order: CustomerDto) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
+        getResource("$BASE_URL$CUSTOMERS_RESOURCE/$customerId", CustomerDto::class.java, onSuccess, onNotFound, onFailure)
     }
 
-    private fun buildUrl(resource: String): String {
-        return "$serverUrl$BASE_URL$resource" +
-                "?$O_AUTH_CONSUMER_KEY_PARAM_NAME=$clientKey" +
-                "&$O_AUTH_CONSUMER_TOKEN_PARAM_NAME=$clientSecret" +
-                "&$O_AUTH_SIGNATURE_METHOD_PARAM_NAME=$O_AUTH_SIGNATURE_METHOD" +
-                "&$O_AUTH_VERSION_PARAM_NAME=$O_AUTH_VERSION"
+    fun getOrder(orderId: Int, onSuccess: (order: OrderDto) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
+        getResource("$BASE_URL$ORDERS_RESOURCE/$orderId", OrderDto::class.java, onSuccess, onNotFound, onFailure)
     }
 
-    private fun executeCall(callRequest: Request): ClientResult {
-        val (_, response, result) = callRequest.responseObject(GsonDeserializer(OrderDto::class.java))
-        return when {
-            response.isSuccessful -> SuccessfulClientResult(result.get())
-            response.isNotFound -> FailureClientResult(NOT_FOUND)
-            response.isUnauthorized -> FailureClientResult(UNAUTHORIZED, "clientKey $clientKey unauthorized")
-            else -> FailureClientResult(OTHER, "Failure occurred. Details: ${result.component2()?.errorData.toString()}")
-        }
+    private fun <T : Any> getResource(resourceUrl: String, clazz: Class<T>, onSuccess: (data: T) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
+        val signedUrl = createSignedUrl(resourceUrl)
+        Log.d(LOGGING_TAG, "Getting resource $resourceUrl, url: $signedUrl")
+        Fuel.get(signedUrl)
+            .responseObject(GsonDeserializer(clazz)) { _, response, result ->
+                when (result) {
+                    is Result.Failure -> {
+                        Log.e(LOGGING_TAG, "Exception when accessing resource: $resourceUrl\n", result.error)
+                        when {
+                            response.isNotFound -> onNotFound.invoke()
+                            response.isUnauthorized -> onFailure.invoke("Authorization failure")
+                            else -> onFailure.invoke("Communication error")
+                        }
+                    }
+                    is Result.Success -> {
+                        onSuccess.invoke(result.get())
+                    }
+                }
+            }.join()
     }
 
-    class GsonDeserializer<T : Any>(private val clazz: Class<T>) : ResponseDeserializable<T> {
+    private fun createSignedUrl(resourceUrl: String): String {
+        return "$proxyUrl$resourceUrl?${oAuthSignatureGenerator.getAsQueryString(OAuthConfig(serverUrl, clientKey, clientSecret), "$serverUrl$resourceUrl", HttpMethod.GET)}"
+    }
+
+    private class GsonDeserializer<T : Any>(private val clazz: Class<T>) : ResponseDeserializable<T> {
 
         private companion object {
             private val objectMapper = ObjectMapper().apply {
@@ -64,6 +75,7 @@ class WooCommerceClient(
                 setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                registerModule(KotlinModule())
                 registerModule(JavaTimeModule())
                 registerModule(Jdk8Module())
             }
@@ -78,16 +90,3 @@ val Response.isNotFound
 
 val Response.isUnauthorized
     get() = statusCode == 401
-
-sealed class ClientResult(val status: ClientResultStatus)
-
-data class SuccessfulClientResult(val orderDto: OrderDto) : ClientResult(SUCCESS)
-
-data class FailureClientResult(
-    val errorProcessStatus: ClientResultStatus,
-    val reason: String = ""
-) : ClientResult(errorProcessStatus)
-
-enum class ClientResultStatus {
-    SUCCESS, NOT_FOUND, UNAUTHORIZED, OTHER
-}
