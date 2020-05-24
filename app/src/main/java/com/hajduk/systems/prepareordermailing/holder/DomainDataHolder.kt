@@ -4,18 +4,11 @@ import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.Customer
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
 import java.io.File
 
-class ApplicationDataHolder {
-
-    companion object {
-        val instance: ApplicationDataHolder = ApplicationDataHolder()
-    }
-
-    private var orderId: Int? = null
+object DomainDataHolder {
+    private var orderId: Int? = 12
     private var photoFileAbsolutePath: String? = null
     private var customer: CustomerDto? = null
     private var order: OrderDto? = null
-
-    private constructor()
 
     fun clearData() {
         if (photoFileAbsolutePath != null) {
