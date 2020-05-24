@@ -8,7 +8,7 @@ import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.hajduk.systems.prepareordermailing.R
-import com.hajduk.systems.prepareordermailing.holder.ApplicationDataHolder
+import com.hajduk.systems.prepareordermailing.holder.DomainDataHolder
 import kotlinx.android.synthetic.main.activity_take_photo.*
 import java.io.File
 
@@ -31,7 +31,7 @@ class TakePhoto : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         val photoFile = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), photoFileName)
         if (PHOTO_CAPTURE_REQUEST_CODE == requestCode && Activity.RESULT_OK == resultCode) {
-            ApplicationDataHolder.instance.setPhotoFileAbsolutePath(photoFile.absolutePath)
+            DomainDataHolder.setPhotoFileAbsolutePath(photoFile.absolutePath)
             takePhotoTextView.text = ""
             startActivity(Intent(this, SendEmail::class.java))
         } else {
@@ -54,6 +54,6 @@ class TakePhoto : AppCompatActivity() {
     }
 
     private fun createPhotoFile(): File {
-        return File.createTempFile("Order_${ApplicationDataHolder.instance.demandOrderId()}_", ".jpg", getExternalFilesDir(Environment.DIRECTORY_PICTURES))
+        return File.createTempFile("Order_${DomainDataHolder.demandOrderId()}_", ".jpg", getExternalFilesDir(Environment.DIRECTORY_PICTURES))
     }
 }

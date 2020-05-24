@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.hajduk.systems.prepareordermailing.R
 import com.hajduk.systems.prepareordermailing.adapter.email.EmailData
 import com.hajduk.systems.prepareordermailing.adapter.email.IntentEmailSender
-import com.hajduk.systems.prepareordermailing.holder.ApplicationDataHolder
+import com.hajduk.systems.prepareordermailing.holder.DomainDataHolder
 import com.hajduk.systems.prepareordermailing.service.template.PrepareOrderEmailRenderData
 import com.hajduk.systems.prepareordermailing.service.template.TemplateEngine
 import kotlinx.android.synthetic.main.activity_send_email.*
@@ -32,12 +32,12 @@ class SendEmail : AppCompatActivity() {
     }
 
     private fun resolveEmailData(): EmailData {
-        val templateData = PrepareOrderEmailRenderData(ApplicationDataHolder.instance.demandCustomer(), ApplicationDataHolder.instance.demandOrder())
+        val templateData = PrepareOrderEmailRenderData(DomainDataHolder.demandCustomer(), DomainDataHolder.demandOrder())
         return EmailData(
             templateData.customer.email,
             "Aktualizacja zamówienia: ${templateData.order.id}",
             templateEngine.renderPrepareOrderEmail(templateData),
-            listOf(Uri.fromFile(ApplicationDataHolder.instance.demandPhotoFile()))
+            listOf(Uri.fromFile(DomainDataHolder.demandPhotoFile()))
         )
     }
 }

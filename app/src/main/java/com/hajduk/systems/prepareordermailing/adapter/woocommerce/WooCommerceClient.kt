@@ -6,13 +6,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.result.Result
+import com.google.gson.JsonParser
+import com.hajduk.systems.prepareordermailing.adapter.woocommerce.WooCommerceClient.MessageUtils.messageTranslator
+import com.hajduk.systems.prepareordermailing.adapter.woocommerce.WooCommerceClient.MessageUtils.unknown401Message
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.CustomerDto
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.oauth.OAuthSignatureGenerator
@@ -52,7 +53,7 @@ class WooCommerceClient(
                         Log.e(LOGGING_TAG, "Exception when accessing resource: $resourceUrl\n", result.error)
                         when {
                             response.isNotFound -> onNotFound.invoke()
-                            response.isUnauthorized -> onFailure.invoke("Authorization failure")
+                            response.isUnauthorized -> onFailure.invoke(extractFailureMessage(response))
                             else -> onFailure.invoke("Communication error")
                         }
                     }
@@ -61,6 +62,11 @@ class WooCommerceClient(
                     }
                 }
             }.join()
+    }
+
+    private fun extractFailureMessage(response: Response): String {
+        val parsedUnauthorizedMessage = JsonParser().parse(String(response.data)).asJsonObject.get("message").asString
+        return messageTranslator[parsedUnauthorizedMessage] ?: unknown401Message
     }
 
     private fun createSignedUrl(resourceUrl: String): String {
@@ -76,12 +82,18 @@ class WooCommerceClient(
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 registerModule(KotlinModule())
-                registerModule(JavaTimeModule())
-                registerModule(Jdk8Module())
             }
         }
 
         override fun deserialize(content: String): T = objectMapper.readValue(content, clazz)
+    }
+
+    private object MessageUtils {
+        val messageTranslator = mapOf(
+            "Consumer key is invalid." to "Podano niewłaściwy klucz uwierzytelniający",
+            "Invalid signature - provided signature does not match." to "Niepowodzenie uwierzytelniania do sklepu - sprawdz poprawnosc hasła"
+        )
+        val unknown401Message = "Blad uwierzytelnienia. Skontaktuj sie z administratorem: hajduk.nieruchomosci@gmail.com"
     }
 }
 
