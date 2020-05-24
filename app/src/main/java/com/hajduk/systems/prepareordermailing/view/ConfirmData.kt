@@ -53,7 +53,7 @@ class ConfirmData : AppCompatActivity() {
         DomainDataHolder.setCustomer(customer)
         DomainDataHolder.setOrder(order)
 
-        confirmDataTextView.text = """Zamówienie: ${order.id}
+        confirmDataTextView.text = """Zamówienie nr.: ${order.id}
 Klient: ${customer.firstName} ${customer.lastName}
 Pozycje: 
 ${order.lineItems.map { lineItem -> " - \"${lineItem.name}\" - ${lineItem.quantity} szt." }.joinToString("\n")}"""

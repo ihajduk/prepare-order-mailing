@@ -5,7 +5,7 @@ import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
 import java.io.File
 
 object DomainDataHolder {
-    private var orderId: Int? = 12
+    private var orderId: Int? = 0
     private var photoFileAbsolutePath: String? = null
     private var customer: CustomerDto? = null
     private var order: OrderDto? = null

@@ -28,11 +28,16 @@ class WooCommerceClient(
 ) {
     companion object {
         private const val BASE_URL = "/wp-json/wc/v3"
+        private const val SETTINGS_RESOURCE = "/settings"
         private const val ORDERS_RESOURCE = "/orders"
         private const val CUSTOMERS_RESOURCE = "/customers"
         private const val LOGGING_TAG = "woocommerce"
 
         private val oAuthSignatureGenerator = OAuthSignatureGenerator()
+    }
+
+    fun checkAuthentication(onSuccess: () -> Unit, onFailure: () -> Unit) {
+        getResource("$BASE_URL$SETTINGS_RESOURCE", List::class.java, { onSuccess() }, { onFailure() }, { onFailure() })
     }
 
     fun getCustomer(customerId: Int, onSuccess: (order: CustomerDto) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
