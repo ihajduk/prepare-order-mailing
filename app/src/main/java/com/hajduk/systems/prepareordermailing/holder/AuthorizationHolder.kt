@@ -12,7 +12,7 @@ object AuthorizationHolder {
     var clientSecret: String? = null
         private set
 
-    fun credentialsAreSetInContext(context: Context): Boolean {
+    fun areCredentialsInContext(context: Context): Boolean {
         val sharedPreferences = context.getSharedPreferences(APP_PREFS, 0)
         val credentialsPresent = sharedPreferences.contains(CLIENT_KEY) && sharedPreferences.contains(CLIENT_SECRET)
         if (credentialsPresent) {
@@ -29,5 +29,15 @@ object AuthorizationHolder {
         editor.apply()
         this.clientKey = clientKey
         this.clientSecret = clientSecret
+    }
+
+    fun clearCredentials(context: Context) {
+        val sharedPreferences = context.getSharedPreferences(APP_PREFS, 0)
+        if (sharedPreferences.contains(CLIENT_KEY) && sharedPreferences.contains(CLIENT_SECRET)) {
+            val editor = sharedPreferences.edit()
+            editor.remove(CLIENT_KEY)
+            editor.remove(CLIENT_SECRET)
+            editor.apply()
+        }
     }
 }

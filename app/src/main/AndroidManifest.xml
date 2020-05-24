@@ -20,7 +20,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".view.SetAuthorization"/>
+        <activity android:name=".view.InitializeAuthentication"/>
         <activity android:name=".view.ConfirmData" />
         <activity android:name=".view.TakePhoto" />
         <activity android:name=".view.SendEmail" />

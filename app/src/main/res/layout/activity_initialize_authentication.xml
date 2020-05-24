@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.SetAuthorization">
+        tools:context=".view.InitializeAuthentication">
 
     <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/clientKey"
@@ -20,10 +20,10 @@
             app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/clientKeyText"
+                android:id="@+id/consumerKeyText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="wprowadź clientKey" />
+                android:hint="wprowadź consumer key" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -41,10 +41,10 @@
             app:layout_constraintTop_toBottomOf="@+id/clientKey">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/clientSecretText"
+                android:id="@+id/consumerSecretText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="wprowadź clientSecret" />
+                android:hint="wprowadź consumer secret" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
@@ -55,8 +55,21 @@
             android:layout_marginEnd="162dp"
             android:layout_marginBottom="204dp"
             android:text="Zatwierdź"
+            android:background="@drawable/gray_gradient"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+            android:id="@+id/headerTextView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:fontFamily="sans-serif-black"
+            android:text="Wymagana inicjalizacja"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
