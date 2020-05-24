@@ -12,9 +12,10 @@ import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
+@Ignore
 class SignatureTest {
 
-    @Ignore
+
     @Test
     fun should_generate_signature() {
         val urlBase = "http://localhost/wp-json/wc/v3/orders/1"
@@ -54,7 +55,7 @@ class SignatureTest {
     @Test
     fun wooCommerceClient_test() {
         WooCommerceClient("http://localhost", "http://10.0.2.2:8080", "ck_ac7d7c71127f8399ede3dbbf433744ef3266bb52", "cs_c0c0fd9fe19a81647add48ebee9c1522a361461e")
-            .getOrder("12",
+            .getOrder(12,
                 { println("success $it") },
                 { println("not found") },
                 { println("failure $it") }

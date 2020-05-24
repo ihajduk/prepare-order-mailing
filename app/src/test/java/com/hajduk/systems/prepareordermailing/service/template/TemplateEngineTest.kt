@@ -24,7 +24,7 @@ class TemplateEngineTest {
         )
         val order = OrderDto(
             11,
-            LocalDate.parse("2020-05-20").atStartOfDay(),
+            //LocalDate.parse("2020-05-20").atStartOfDay(),
             1,
             10.11.toBigDecimal(),
             listOf(LineItemDto(111, "Product 1", 1), LineItemDto(222, "Product 2", 2))

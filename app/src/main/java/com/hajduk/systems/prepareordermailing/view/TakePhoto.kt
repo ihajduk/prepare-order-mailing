@@ -7,9 +7,8 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.hajduk.systems.prepareordermailing.ORDER_ID
-import com.hajduk.systems.prepareordermailing.PHOTO_ABSOLUTE_PATH
 import com.hajduk.systems.prepareordermailing.R
+import com.hajduk.systems.prepareordermailing.holder.ApplicationDataHolder
 import kotlinx.android.synthetic.main.activity_take_photo.*
 import java.io.File
 
@@ -25,20 +24,16 @@ class TakePhoto : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_take_photo)
-        takePhotoButton.setOnClickListener { _ ->
-            initializeImageCaptureIntent()
-        }
+        takePhotoButton.setOnClickListener { initializeImageCaptureIntent() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val photoFile = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), photoFileName)
         if (PHOTO_CAPTURE_REQUEST_CODE == requestCode && Activity.RESULT_OK == resultCode) {
+            ApplicationDataHolder.instance.setPhotoFileAbsolutePath(photoFile.absolutePath)
             takePhotoTextView.text = ""
-            startActivity(Intent(this, SendEmail::class.java).apply {
-                putExtra(ORDER_ID, getOrderId())
-                putExtra(PHOTO_ABSOLUTE_PATH, photoFile.absolutePath)
-            })
+            startActivity(Intent(this, SendEmail::class.java))
         } else {
             if (photoFile.exists()) {
                 photoFile.delete()
@@ -59,10 +54,6 @@ class TakePhoto : AppCompatActivity() {
     }
 
     private fun createPhotoFile(): File {
-        return File.createTempFile("Order_${getOrderId()}_", ".jpg", getExternalFilesDir(Environment.DIRECTORY_PICTURES))
-    }
-
-    private fun getOrderId(): String {
-        return intent.getStringExtra(ORDER_ID) ?: throw IllegalStateException("Order id is missing")
+        return File.createTempFile("Order_${ApplicationDataHolder.instance.demandOrderId()}_", ".jpg", getExternalFilesDir(Environment.DIRECTORY_PICTURES))
     }
 }

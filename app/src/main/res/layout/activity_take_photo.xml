@@ -11,16 +11,13 @@
 
         <Button
                 android:id="@+id/takePhotoButton"
-                android:layout_width="409dp"
-                android:layout_height="64dp"
-                android:layout_marginTop="487dp"
-                android:layout_marginEnd="2dp"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
                 android:layout_weight="1"
                 android:text="Zrób zdjęcie"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/takePhotoTextView" />
+                app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
                 android:id="@+id/takePhotoTextView"

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.ResponseDeserializable
@@ -25,16 +26,17 @@ class WooCommerceClient(
     companion object {
         private const val BASE_URL = "/wp-json/wc/v3"
         private const val ORDERS_RESOURCE = "/orders"
+        private const val CUSTOMERS_RESOURCE = "/customers"
         private const val LOGGING_TAG = "woocommerce"
 
         private val oAuthSignatureGenerator = OAuthSignatureGenerator()
     }
 
-    fun getCustomer(customerId: String, onSuccess: (order: CustomerDto) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
-        getResource("$BASE_URL$ORDERS_RESOURCE/$customerId", CustomerDto::class.java, onSuccess, onNotFound, onFailure)
+    fun getCustomer(customerId: Int, onSuccess: (order: CustomerDto) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
+        getResource("$BASE_URL$CUSTOMERS_RESOURCE/$customerId", CustomerDto::class.java, onSuccess, onNotFound, onFailure)
     }
 
-    fun getOrder(orderId: String, onSuccess: (order: OrderDto) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
+    fun getOrder(orderId: Int, onSuccess: (order: OrderDto) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
         getResource("$BASE_URL$ORDERS_RESOURCE/$orderId", OrderDto::class.java, onSuccess, onNotFound, onFailure)
     }
 
@@ -71,7 +73,8 @@ class WooCommerceClient(
                 setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-//                registerModule(JavaTimeModule()) todo: na wszelki wypadek bo mi się coś pluł do tego
+                registerModule(KotlinModule())
+//                registerModule(JavaTimeModule())
 //                registerModule(Jdk8Module())
             }
         }

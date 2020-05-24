@@ -4,12 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.hajduk.systems.prepareordermailing.ORDER_ID
 import com.hajduk.systems.prepareordermailing.R
+import com.hajduk.systems.prepareordermailing.holder.ApplicationDataHolder
 import kotlinx.android.synthetic.main.activity_scan_bar_code.*
 
 
-class ZxingScanBarCode : AppCompatActivity() {
+class ScanBarCode : AppCompatActivity() {
 
     companion object {
         private const val BAR_CODE_SCAN_REQUEST = 1
@@ -26,9 +26,8 @@ class ZxingScanBarCode : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (BAR_CODE_SCAN_REQUEST == requestCode && Activity.RESULT_OK == resultCode) {
-            startActivity(Intent(this, TakePhoto::class.java).apply {
-                putExtra(ORDER_ID, data?.getStringExtra("SCAN_RESULT"))
-            })
+            ApplicationDataHolder.instance.setOrderId(data?.getStringExtra("SCAN_RESULT")?.toInt() ?: throw IllegalStateException("Cannot resolve orderId"))
+            startActivity(Intent(this, ConfirmData::class.java))
         }
     }
 
