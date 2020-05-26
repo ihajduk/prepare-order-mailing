@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PrepareOrderMailing</string>
+    <string name="app_name">Listomat</string>
     <string name="scan_code">Zeskanuj kod</string>
     <string name="scan_button">Skanuj</string>
     <string name="enter_code">Wpisz kod</string>

@@ -49,13 +49,13 @@
 
     <Button
             android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="162dp"
-            android:layout_marginEnd="162dp"
-            android:layout_marginBottom="204dp"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/gray_3d_gradient"
             android:text="Zatwierdź"
-            android:background="@drawable/gray_gradient"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
