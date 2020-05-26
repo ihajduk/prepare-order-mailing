@@ -11,7 +11,6 @@ import com.hajduk.systems.prepareordermailing.adapter.email.IntentEmailSender
 import com.hajduk.systems.prepareordermailing.holder.DomainDataHolder
 import com.hajduk.systems.prepareordermailing.service.template.PrepareOrderEmailRenderData
 import com.hajduk.systems.prepareordermailing.service.template.TemplateEngine
-import kotlinx.android.synthetic.main.activity_send_email.*
 
 class SendEmail : AppCompatActivity() {
 
@@ -22,13 +21,7 @@ class SendEmail : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_email)
         findViewById<Button>(R.id.restartFlowButton).setOnClickListener { startActivity(Intent(this, ScanBarCode::class.java)) }
-        sendEmail()
-    }
-
-    private fun sendEmail() {
-        val emailData = resolveEmailData()
-        sendEmailTextView.text = "Wysyłam email do:\n${emailData.receiver}"
-        emailSender.sentEmail(emailData, this)
+        emailSender.sentEmail(resolveEmailData(), this)
     }
 
     private fun resolveEmailData(): EmailData {
