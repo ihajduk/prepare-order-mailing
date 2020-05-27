@@ -50,6 +50,8 @@ class WooCommerceClient(
 
     private fun <T : Any> getResource(resourceUrl: String, clazz: Class<T>, onSuccess: (data: T) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
         Fuel.get(createSignedUrl(resourceUrl))
+            .timeout(5000)
+            .timeoutRead(10000)
             .responseObject(GsonDeserializer(clazz)) { _, response, result ->
                 when (result) {
                     is Result.Failure -> {
