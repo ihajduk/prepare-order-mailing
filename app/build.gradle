@@ -49,6 +49,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.android.material:material:1.1.0'
 
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+    implementation 'com.github.tony19:logback-android:2.0.0'
+
     implementation 'com.github.kittinunf.fuel:fuel:2.1.0'
     implementation 'com.github.kittinunf.fuel:fuel-android:2.1.0'
     implementation 'com.github.kittinunf.fuel:fuel-json:2.1.0'

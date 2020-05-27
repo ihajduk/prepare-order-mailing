@@ -1,0 +1,27 @@
+<configuration debug="true">
+  
+  <property name="LOG_HOME" value="${DATA_DIR}" />
+
+  <appender name="CONSOLE" class="ch.qos.logback.classic.android.LogcatAppender">
+    <encoder>
+      <pattern>%msg</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <append>true</append>
+    <file>/sdcard/Android/data/com.hajduk.systems.prepareordermailing/app.txt</file>
+    <encoder>
+      <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="com.hajduk" level="INFO">
+    <appender-ref ref="FILE" />
+  </logger>
+
+  <root level="DEBUG">
+    <appender-ref ref="CONSOLE" />
+  </root>
+
+</configuration>

@@ -5,19 +5,13 @@ import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
 import java.io.File
 
 object DomainDataHolder {
-    private var orderId: Int? = 0
+
+    private var orderId: Int? = null
     private var photoFileAbsolutePath: String? = null
     private var customer: CustomerDto? = null
     private var order: OrderDto? = null
 
     fun clearData() {
-        if (photoFileAbsolutePath != null) {
-            File(demandPhotoFileAbsolutePath()).apply {
-                if (exists()) {
-                    delete()
-                }
-            }
-        }
         orderId = null
         photoFileAbsolutePath = null
         customer = null

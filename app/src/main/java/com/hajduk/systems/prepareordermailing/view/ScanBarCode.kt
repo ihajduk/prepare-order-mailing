@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.hajduk.systems.prepareordermailing.R
+import com.hajduk.systems.prepareordermailing.exception.ThreadExceptionHandler
 import com.hajduk.systems.prepareordermailing.holder.AuthorizationHolder
 import com.hajduk.systems.prepareordermailing.holder.DomainDataHolder
 import kotlinx.android.synthetic.main.activity_scan_bar_code.*
@@ -18,14 +19,18 @@ class ScanBarCode : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DomainDataHolder.clearData()
+        initializeApp()
         if (AuthorizationHolder.areCredentialsInContext(this)) {
             setContentView(R.layout.activity_scan_bar_code)
             scanBarCodeButton.setOnClickListener { initializeBarCodeScanning() }
         } else {
             startActivity(Intent(this, InitializeAuthentication::class.java))
         }
+    }
 
+    private fun initializeApp() {
+        ThreadExceptionHandler.configure()
+        DomainDataHolder.clearData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
