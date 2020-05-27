@@ -1,6 +1,5 @@
 package com.hajduk.systems.prepareordermailing.adapter.woocommerce
 
-import android.util.Log
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -19,6 +18,7 @@ import com.hajduk.systems.prepareordermailing.adapter.woocommerce.model.OrderDto
 import com.hajduk.systems.prepareordermailing.adapter.woocommerce.oauth.OAuthSignatureGenerator
 import com.icoderman.woocommerce.HttpMethod
 import com.icoderman.woocommerce.oauth.OAuthConfig
+import org.slf4j.LoggerFactory
 
 class WooCommerceClient(
     private val serverUrl: String,
@@ -31,9 +31,9 @@ class WooCommerceClient(
         private const val SETTINGS_RESOURCE = "/settings"
         private const val ORDERS_RESOURCE = "/orders"
         private const val CUSTOMERS_RESOURCE = "/customers"
-        private const val LOGGING_TAG = "woocommerce"
 
         private val oAuthSignatureGenerator = OAuthSignatureGenerator()
+        private val logger = LoggerFactory.getLogger(WooCommerceClient::class.java)
     }
 
     fun checkAuthentication(onSuccess: () -> Unit, onFailure: () -> Unit) {
@@ -49,17 +49,17 @@ class WooCommerceClient(
     }
 
     private fun <T : Any> getResource(resourceUrl: String, clazz: Class<T>, onSuccess: (data: T) -> Unit, onNotFound: () -> Unit, onFailure: (message: String) -> Unit) {
-        val signedUrl = createSignedUrl(resourceUrl)
-        Log.d(LOGGING_TAG, "Getting resource $resourceUrl, url: $signedUrl")
-        Fuel.get(signedUrl)
+        Fuel.get(createSignedUrl(resourceUrl))
             .responseObject(GsonDeserializer(clazz)) { _, response, result ->
                 when (result) {
                     is Result.Failure -> {
-                        Log.e(LOGGING_TAG, "Exception when accessing resource: $resourceUrl\n", result.error)
                         when {
                             response.isNotFound -> onNotFound.invoke()
                             response.isUnauthorized -> onFailure.invoke(extractFailureMessage(response))
-                            else -> onFailure.invoke("Communication error")
+                            else -> {
+                                logger.error("Exception when accessing resource: $resourceUrl", result.error)
+                                onFailure.invoke("Communication error")
+                            }
                         }
                     }
                     is Result.Success -> {
