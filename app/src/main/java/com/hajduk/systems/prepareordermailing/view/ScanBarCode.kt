@@ -3,6 +3,7 @@ package com.hajduk.systems.prepareordermailing.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hajduk.systems.prepareordermailing.R
 import com.hajduk.systems.prepareordermailing.exception.ThreadExceptionHandler
@@ -42,9 +43,14 @@ class ScanBarCode : AppCompatActivity() {
     }
 
     private fun initializeBarCodeScanning() {
-        startActivityForResult(Intent("com.google.zxing.client.android.SCAN").apply {
+        val zxingScanBarCodeIntent = Intent("com.google.zxing.client.android.SCAN").apply {
             putExtra("SCAN_MODE", "BAR_CODE_MODE")
             putExtra("SAVE_HISTORY", false)
-        }, BAR_CODE_SCAN_REQUEST)
+        }
+        return if (zxingScanBarCodeIntent.resolveActivity(packageManager) == null) {
+            Toast.makeText(this, "Skanowanie nie może być rozpoczęte, zaintaluj Zxing Bar Code Scanner", Toast.LENGTH_LONG).show()
+        } else {
+            startActivityForResult(zxingScanBarCodeIntent, BAR_CODE_SCAN_REQUEST)
+        }
     }
 }
